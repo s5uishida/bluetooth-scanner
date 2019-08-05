@@ -12,7 +12,7 @@ public class ScanData {
 	protected static final int RSSI_UNSET = Integer.MAX_VALUE;
 	protected static final int TXPOWER_UNSET = Integer.MAX_VALUE;
 
-	private static final String dateFormat = "yyyy-MM-dd hh:mm:ss.SSS";
+	private static final String dateFormat = "yyyy-MM-dd HH:mm:ss.SSS";
 	private static final SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
 
 	private final String adapterDeviceName;
