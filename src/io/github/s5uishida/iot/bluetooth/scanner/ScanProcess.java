@@ -217,13 +217,10 @@ public class ScanProcess {
 			try {
 				while(running) {
 					try {
-						adapter.startDiscovery();
-					} catch (DBusExecutionException e) {
-						LOG.warn("caught - {}", e.toString(), e);
-					}
-					Thread.sleep(scanPeriodMillis);
-					try {
-						adapter.stopDiscovery();
+						if (adapter.startDiscovery()) {
+							Thread.sleep(scanPeriodMillis);
+							adapter.stopDiscovery();
+						}
 					} catch (DBusExecutionException e) {
 						LOG.warn("caught - {}", e.toString(), e);
 					}

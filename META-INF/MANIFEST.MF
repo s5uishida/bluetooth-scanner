@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: bluetooth scanner
 Bundle-SymbolicName: bluetooth-scanner
-Bundle-Version: 0.1.0
+Bundle-Version: 0.1.1
 Automatic-Module-Name: bluetooth-scanner
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.github.hypfvieh;version="0.1.2",
@@ -17,4 +17,4 @@ Import-Package: com.github.hypfvieh;version="0.1.2",
  org.freedesktop.dbus.types;version="3.0.2",
  org.slf4j;version="[1.7.25,1.8.0)"
 Bundle-Vendor: Shigeru Ishida (s5uishida)
-Export-Package: io.github.s5uishida.iot.bluetooth.scanner;version="0.1.0"
+Export-Package: io.github.s5uishida.iot.bluetooth.scanner;version="0.1.1"
