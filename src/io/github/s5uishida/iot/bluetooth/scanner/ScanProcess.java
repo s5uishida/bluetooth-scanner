@@ -16,7 +16,6 @@ import org.bluez.exceptions.BluezInvalidArgumentsException;
 import org.bluez.exceptions.BluezNotReadyException;
 import org.bluez.exceptions.BluezNotSupportedException;
 import org.freedesktop.dbus.exceptions.DBusException;
-import org.freedesktop.dbus.exceptions.DBusExecutionException;
 import org.freedesktop.dbus.handlers.AbstractPropertiesChangedHandler;
 import org.freedesktop.dbus.interfaces.Properties.PropertiesChanged;
 import org.freedesktop.dbus.types.Variant;
@@ -41,25 +40,16 @@ public class ScanProcess {
 	protected final IScanHandler scanHandler;
 	protected final String logPrefix;
 
-	private final ScanProcessThread scanProcessThread;
-
 	protected DeviceManager manager;
 	protected BluetoothAdapter adapter;
 
 	protected final Map<String, BluetoothDevice> deviceMap = new HashMap<String, BluetoothDevice>();
 
 	public ScanProcess(String adapterDeviceName, IScanHandler scanHandler) {
-		this(adapterDeviceName, scanHandler, null,
-				ScanProcessThread.DEFAULT_SCAN_PERIOD_MILLIS, ScanProcessThread.DEFAULT_SCAN_INTERVAL_MILLIS);
+		this(adapterDeviceName, scanHandler, null);
 	}
 
 	public ScanProcess(String adapterDeviceName, IScanHandler scanHandler, Map<DiscoveryFilter, Object> filter) {
-		this(adapterDeviceName, scanHandler, filter,
-				ScanProcessThread.DEFAULT_SCAN_PERIOD_MILLIS, ScanProcessThread.DEFAULT_SCAN_INTERVAL_MILLIS);
-	}
-
-	public ScanProcess(String adapterDeviceName, IScanHandler scanHandler, Map<DiscoveryFilter, Object> filter,
-			int scanPeriodMillis, int scanIntervalMillis) {
 		this.adapterDeviceName = Objects.requireNonNull(adapterDeviceName);
 		this.scanHandler = Objects.requireNonNull(scanHandler);
 		this.logPrefix = "[" + this.adapterDeviceName + "] ";
@@ -106,8 +96,6 @@ public class ScanProcess {
 		} catch (DBusException e) {
 			throw new IllegalStateException(e);
 		}
-
-		scanProcessThread = new ScanProcessThread(scanPeriodMillis, scanIntervalMillis);
 	}
 
 	public DeviceManager getDeviceManager() {
@@ -122,114 +110,20 @@ public class ScanProcess {
 		return adapterDeviceName;
 	}
 
-	public void setScanPeriod(int scanPeriodMillis) {
-		scanProcessThread.setScanPeriod(scanPeriodMillis);
-	}
-
-	public int getScanPeriod() {
-		return scanProcessThread.getScanPeriod();
-	}
-
-	public void setScanInterval(int scanIntervalMillis) {
-		scanProcessThread.setScanInterval(scanIntervalMillis);
-	}
-
-	public int getScanInterval() {
-		return scanProcessThread.getScanInterval();
-	}
-
 	public Map<String, BluetoothDevice> getDeviceMap() {
 		return deviceMap;
 	}
 
-	public void start() {
-		scanProcessThread.setDaemon(true);
-		scanProcessThread.start();
+	public boolean start() {
+		return adapter.startDiscovery();
 	}
 
-	public void stop() {
-		scanProcessThread.stopThread();
+	public boolean stop() {
+		return adapter.stopDiscovery();
 	}
 
-	public boolean isAlive() {
-		return scanProcessThread.isAlive();
-	}
-
-	class ScanProcessThread extends Thread {
-		private final Logger LOG = LoggerFactory.getLogger(ScanProcessThread.class);
-
-		private static final int DEFAULT_SCAN_PERIOD_MILLIS = 5000;
-		private static final int MIN_SCAN_PERIOD_MILLIS = 100;
-		private static final int DEFAULT_SCAN_INTERVAL_MILLIS = 5000;
-		private static final int MIN_SCAN_INTERVAL_MILLIS = 100;
-
-		private volatile int scanPeriodMillis = DEFAULT_SCAN_PERIOD_MILLIS;
-		private volatile int scanIntervalMillis = DEFAULT_SCAN_INTERVAL_MILLIS;
-		private volatile boolean running = true;
-
-		public ScanProcessThread() {
-			this(DEFAULT_SCAN_PERIOD_MILLIS, DEFAULT_SCAN_INTERVAL_MILLIS);
-		}
-
-		public ScanProcessThread(int scanPeriodMillis, int scanIntervalMillis) {
-			setScanPeriod(scanPeriodMillis);
-			setScanInterval(scanIntervalMillis);
-		}
-
-		public void setScanPeriod(int scanPeriodMillis) {
-			if (scanPeriodMillis < MIN_SCAN_PERIOD_MILLIS) {
-				this.scanPeriodMillis = MIN_SCAN_PERIOD_MILLIS;
-				LOG.info(logPrefix + "{} msec specified for Scanning is shorter than {} msec, so change to {} msec.",
-						scanPeriodMillis, MIN_SCAN_PERIOD_MILLIS, MIN_SCAN_PERIOD_MILLIS);
-			} else {
-				this.scanPeriodMillis = scanPeriodMillis;
-			}
-			LOG.info(logPrefix + "{} msec for Scanning is set.", this.scanPeriodMillis);
-		}
-
-		public int getScanPeriod() {
-			return scanPeriodMillis;
-		}
-
-		public void setScanInterval(int scanIntervalMillis) {
-			if (scanIntervalMillis < MIN_SCAN_INTERVAL_MILLIS) {
-				this.scanIntervalMillis = MIN_SCAN_INTERVAL_MILLIS;
-				LOG.info(logPrefix + "{} msec specified for Scanning interval is shorter than {} msec, so change to {} msec.",
-						scanIntervalMillis, MIN_SCAN_INTERVAL_MILLIS, MIN_SCAN_INTERVAL_MILLIS);
-			} else {
-				this.scanIntervalMillis = scanIntervalMillis;
-			}
-			LOG.info(logPrefix + "{} msec for Scanning interval is set.", this.scanIntervalMillis);
-		}
-
-		public int getScanInterval() {
-			return scanIntervalMillis;
-		}
-
-		public void stopThread() {
-			running = false;
-			LOG.info(logPrefix + "scanning advertising signals stopped.");
-		}
-
-		@Override
-		public void run() {
-			LOG.info(logPrefix + "scanning advertising signals started.");
-			try {
-				while(running) {
-					try {
-						if (adapter.startDiscovery()) {
-							Thread.sleep(scanPeriodMillis);
-							adapter.stopDiscovery();
-						}
-					} catch (DBusExecutionException e) {
-						LOG.warn("caught - {}", e.toString(), e);
-					}
-					Thread.sleep(scanIntervalMillis);
-				}
-			} catch (InterruptedException e) {
-				LOG.warn("caught - {}", e.toString(), e);
-			}
-		}
+	public boolean isDiscovering() {
+		return adapter.isDiscovering();
 	}
 
 	/******************************************************************************************************************
