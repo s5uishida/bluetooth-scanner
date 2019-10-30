@@ -36,7 +36,7 @@ I would like to thank the authors of these very useful codes, and all the contri
 
 ## How to use
 The following sample code implementing the `IScanHandler` interface will be helpful.
-```
+```java
 import com.github.hypfvieh.bluetooth.DiscoveryFilter;
 import com.github.hypfvieh.bluetooth.DiscoveryTransport;
 import com.github.hypfvieh.bluetooth.wrapper.BluetoothDevice;
