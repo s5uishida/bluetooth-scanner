@@ -2,19 +2,19 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: bluetooth scanner
 Bundle-SymbolicName: bluetooth-scanner
-Bundle-Version: 0.1.2
+Bundle-Version: 0.1.3
 Automatic-Module-Name: bluetooth-scanner
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Import-Package: com.github.hypfvieh;version="0.1.2",
- com.github.hypfvieh.bluetooth;version="0.1.2",
- com.github.hypfvieh.bluetooth.wrapper;version="0.1.2",
- org.bluez;version="0.1.2",
- org.bluez.exceptions;version="0.1.2",
- org.freedesktop.dbus.exceptions;version="3.0.2",
- org.freedesktop.dbus.handlers;version="3.0.2",
- org.freedesktop.dbus.interfaces;version="3.0.2",
- org.freedesktop.dbus.messages;version="3.0.2",
- org.freedesktop.dbus.types;version="3.0.2",
+Import-Package: com.github.hypfvieh;version="[0.1.2,0.2.0)",
+ com.github.hypfvieh.bluetooth;version="[0.1.2,0.2.0)",
+ com.github.hypfvieh.bluetooth.wrapper;version="[0.1.2,0.2.0)",
+ org.bluez;version="[0.1.2,0.2.0)",
+ org.bluez.exceptions;version="[0.1.2,0.2.0)",
+ org.freedesktop.dbus.exceptions,
+ org.freedesktop.dbus.handlers,
+ org.freedesktop.dbus.interfaces,
+ org.freedesktop.dbus.messages,
+ org.freedesktop.dbus.types,
  org.slf4j;version="[1.7.25,1.8.0)"
 Bundle-Vendor: Shigeru Ishida (s5uishida)
-Export-Package: io.github.s5uishida.iot.bluetooth.scanner;version="0.1.2"
+Export-Package: io.github.s5uishida.iot.bluetooth.scanner;version="0.1.3"
