@@ -28,7 +28,9 @@ If git is not included, please install it.
 
 ## Use this with the following bundles
 - [SLF4J 1.7.26](https://www.slf4j.org/)
-- [bluez-dbus-osgi 0.1.2-SNAPSHOT](https://github.com/hypfvieh/bluez-dbus)
+- [Apache Commons Lang 3.9](https://commons.apache.org/proper/commons-lang/)
+- [dbus-java-osgi 3.2.1-SNAPSHOT](https://github.com/hypfvieh/dbus-java)
+- [bluez-dbus-osgi 0.1.2-SNAPSHOT](https://github.com/s5uishida/bluez-dbus-osgi)
 
 I would like to thank the authors of these very useful codes, and all the contributors.
 
